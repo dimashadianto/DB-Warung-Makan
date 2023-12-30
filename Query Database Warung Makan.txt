@@ -1,0 +1,233 @@
+-- DROP TABLE jika pernah membuat table dengan nama yang sama
+DROP TABLE customer;
+DROP TABLE menu;
+DROP TABLE menu_price;
+DROP TABLE eatery_table;
+DROP TABLE food_choice;
+DROP TABLE invoice;
+DROP TABLE invoice_detail;
+
+-- CREATE TABLE customer dengan customer_id memiliki CONSTRAINT PRIMARY KEY dan attribute lainnya yang memiliki CONSTRAINT NOT NULL
+CREATE TABLE customer (
+    customer_id NUMBER(3,0) CONSTRAINT cus_id_pk PRIMARY KEY CONSTRAINT cus_id_nn NOT NULL,
+    customer_name VARCHAR2(20) CONSTRAINT cus_name_nn NOT NULL,
+    phone_number VARCHAR2(20) CONSTRAINT cus_number_phone_nn NOT NULL
+);
+
+-- CREATE TABLE menu dengan menu_id memiliki CONSTRAINT PRIMARY KEY dan menu_name yang memiliki CONSTRAINT NOT NULL
+CREATE TABLE menu (
+    menu_id NUMBER(3,0) CONSTRAINT menu_id_pk PRIMARY KEY CONSTRAINT menu_id_nn NOT NULL,
+    menu_name VARCHAR2(50) CONSTRAINT menu_name_nn NOT NULL
+);
+
+-- CREATE TABLE menu_price dengan menu_price_id memiliki CONSTRAINT PRIMARY KEY, menu_id yang diguanakan sebagai FOREIGN KEY dari tabel menu, dan price yang memiliki CONSTRAINT NOT NULL
+CREATE TABLE menu_price (
+    menu_price_id NUMBER(3,0) CONSTRAINT menu_price_id_pk PRIMARY KEY CONSTRAINT menu_price_id_nn NOT NULL,
+    menu_id NUMBER(3,0) CONSTRAINT menu_price_menu_id_nn NOT NULL, 
+    price NUMBER(6,0) CONSTRAINT menu_price_nn NOT NULL,
+    CONSTRAINT menu_price_min CHECK (price > 0),
+    CONSTRAINT menu_price_menu_id_fk FOREIGN KEY (menu_id) REFERENCES menu (menu_id) ON DELETE CASCADE
+);
+
+-- CREATE TABLE eatry_table dengan eatry_table_id memiliki CONSTRAINT PRIMARY KEY dan eatery_table_name yang memiliki CONSTRAINT NOT NULL
+CREATE TABLE eatery_table (
+    eatery_table_id NUMBER(3.0) CONSTRAINT table_id_pk PRIMARY KEY CONSTRAINT table_id_nn NOT NULL,
+    eatery_table_name VARCHAR2(5) CONSTRAINT table_name_nn NOT NULL
+);
+
+-- CREATE TABLE food_choice dengan food_choice_id memiliki CONSTRAINT PRIMARY KEY dan description bertipe VARCHAR2
+CREATE TABLE food_choice (
+    food_choice_id VARCHAR2(5) CONSTRAINT food_choice_id_pk PRIMARY KEY CONSTRAINT food_choice_id_nn NOT NULL,
+    description VARCHAR2(20)
+);
+
+-- CREATE TABLE invoice dengan invoice_id yang memiliki CONSTRAINT PRIMARY KEY dan attribute lainnya yang memiliki CONSTRAINT NOT NULL
+-- customer_id yang digunakan sebagai FOREIGN KEY dari tabel customer
+-- eatery_table_id yang digunakan sebagai FOREIGN KEY dari tabel eatery_table
+-- food_choice_id yang digunakan sebagai FOREIGN KEY dari tabel food_choice
+CREATE TABLE invoice (
+    invoice_id NUMBER(3.0) CONSTRAINT invoice_id_pk PRIMARY KEY CONSTRAINT invoice_id_nn NOT NULL,
+    invoice_date DATE CONSTRAINT invoice_date_nn NOT NULL,
+    customer_id NUMBER(3.0) CONSTRAINT invoice_customer_id_nn NOT NULL,
+    eatery_table_id NUMBER(3.0),
+    food_choice_id VARCHAR2(5) CONSTRAINT invoice_food_choice_id_nn NOT NULL,
+    CONSTRAINT invoice_customer_id_fk FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE CASCADE,
+    CONSTRAINT invoice_eatery_table_id_fk FOREIGN KEY (eatery_table_id) REFERENCES eatery_table (eatery_table_id) ON DELETE CASCADE,
+    CONSTRAINT invoice_food_choice_id_fk FOREIGN KEY (food_choice_id) REFERENCES food_choice (food_choice_id) ON DELETE CASCADE
+);
+
+-- CREATE TABLE invoice dengan invoice_detail_id yang memiliki CONSTRAINT PRIMARY KEY dan attribute lainnya yang memiliki CONSTRAINT NOT NULL
+-- invoice_id yang digunakan sebagai FOREIGN KEY dari tabel invoice
+-- menu_price_id yang digunakan sebagai FOREIGN KEY dari tabel menu_price
+CREATE TABLE invoice_detail (
+    invoice_detail_id NUMBER(3.0) CONSTRAINT invoice_detail_id_pk PRIMARY KEY CONSTRAINT invoice_detail_id_nn NOT NULL,
+    invoice_id NUMBER(3.0) CONSTRAINT invoice_detail_invoice_id_nn NOT NULL,
+    menu_price_id NUMBER(3.0) CONSTRAINT invoice_detail_menu_price_id_nn NOT NULL,
+    quantity NUMBER(3.0) CONSTRAINT invoice_quantity_nn NOT NULL,
+    CONSTRAINT invoice_detail_invoice_id_fk FOREIGN KEY (invoice_id) REFERENCES invoice (invoice_id) ON DELETE CASCADE,
+    CONSTRAINT invoice_detail_menu_price_id_fk FOREIGN KEY (menu_price_id) REFERENCES menu_price (menu_price_id) ON DELETE CASCADE
+);
+
+-- INSERT data ke dalam tabel customer
+INSERT INTO customer 
+VALUES (1,'Dimas','089567891010');
+INSERT INTO customer 
+VALUES (2,'Ignatius','089567891011');
+INSERT INTO customer 
+VALUES (3,'William','089567891012');
+INSERT INTO customer 
+VALUES (4,'Gabriel','089567891013');
+
+-- INSERT data ke dalam tabel menu
+INSERT INTO menu 
+VALUES (1,'Nasi Putih');
+INSERT INTO menu 
+VALUES (2,'Tahu Goreng');
+INSERT INTO menu 
+VALUES (3,'Tempe Goreng');
+INSERT INTO menu 
+VALUES (4,'Nasi Goreng');
+INSERT INTO menu 
+VALUES (5,'Nasi Goreng Spesial');
+INSERT INTO menu 
+VALUES (6,'Telur Rebus');
+INSERT INTO menu 
+VALUES (7,'Telur Dadar');
+INSERT INTO menu 
+VALUES (8,'Telur Balado');
+INSERT INTO menu 
+VALUES (9,'Tempe Orek');
+INSERT INTO menu 
+VALUES (10,'Indomie Goreng');
+INSERT INTO menu 
+VALUES (11,'Indomie Goreng Telur');
+INSERT INTO menu 
+VALUES (12,'Kopi Kapal Api');
+INSERT INTO menu 
+VALUES (13,'Es Ovaltine');
+INSERT INTO menu 
+VALUES (14,'Es Teh Tawar');
+INSERT INTO menu 
+VALUES (15,'Es Teh Manis');
+INSERT INTO menu 
+VALUES (16,'Sayur Lodeh');
+INSERT INTO menu 
+VALUES (17,'Sayur Kangkung');
+INSERT INTO menu 
+VALUES (18,'Sayur Sop');
+INSERT INTO menu 
+VALUES (19,'Sayur Buncis');
+INSERT INTO menu 
+VALUES (20,'Sayur Tahu');
+
+-- INSERT data ke dalam tabel menu_price
+INSERT INTO menu_price 
+VALUES (1,1,4000);
+INSERT INTO menu_price 
+VALUES (2,2,2000);
+INSERT INTO menu_price
+VALUES (3,3,2000);
+INSERT INTO menu_price 
+VALUES (4,4,12000);
+INSERT INTO menu_price 
+VALUES (5,5,15000);
+INSERT INTO menu_price 
+VALUES (6,6,3000);
+INSERT INTO menu_price 
+VALUES (7,7,3000);
+INSERT INTO menu_price 
+VALUES (8,8,5000);
+INSERT INTO menu_price 
+VALUES (9,9,3000);
+INSERT INTO menu_price 
+VALUES (10,10,8000);
+INSERT INTO menu_price 
+VALUES (11,11,10000);
+INSERT INTO menu_price
+VALUES (12,12,4000);
+INSERT INTO menu_price
+VALUES (13,13,4000);
+INSERT INTO menu_price
+VALUES (14,14,3000);
+INSERT INTO menu_price 
+VALUES (15,15,3000);
+INSERT INTO menu_price 
+VALUES (16,16,4000);
+INSERT INTO menu_price
+VALUES (17,17,4000);
+INSERT INTO menu_price
+VALUES (18,18,4000);
+INSERT INTO menu_price
+VALUES (19,19,4000);
+INSERT INTO menu_price
+VALUES (20,20,4000);
+
+-- INSERT data ke dalam tabel eatery_table
+INSERT INTO eatery_table 
+VALUES (1, '01');
+INSERT INTO eatery_table 
+VALUES (2, '02');
+INSERT INTO eatery_table 
+VALUES (3, '03');
+INSERT INTO eatery_table 
+VALUES (4, '04');
+INSERT INTO eatery_table 
+VALUES (5, '05');
+
+-- INSERT data ke dalam tabel food_choice
+INSERT INTO food_choice
+VALUES ('EI', 'Eat In');
+INSERT INTO food_choice 
+VALUES ('TA', 'Take Away');
+
+-- INSERT data ke dalam tabel invoice
+INSERT INTO invoice 
+VALUES (1, TO_DATE('2023-12-01', 'YYYY-MM-DD'), 1, 1, 'EI');
+INSERT INTO invoice 
+VALUES (2, TO_DATE('2023-12-01', 'YYYY-MM-DD'), 2, 2, 'EI');
+INSERT INTO invoice 
+VALUES (3, TO_DATE('2023-12-01', 'YYYY-MM-DD'), 3, 1, 'EI');
+INSERT INTO invoice 
+VALUES (4, TO_DATE('2023-12-02', 'YYYY-MM-DD'), 4, NULL, 'TA');
+INSERT INTO invoice 
+VALUES (5, TO_DATE('2023-12-02', 'YYYY-MM-DD'), 2, 1, 'EI');
+INSERT INTO invoice 
+VALUES (6, TO_DATE('2023-12-03', 'YYYY-MM-DD'), 1, 2, 'EI');
+INSERT INTO invoice 
+VALUES (7, TO_DATE('2023-12-03', 'YYYY-MM-DD'), 4, 3, 'EI');
+INSERT INTO invoice 
+VALUES (8, TO_DATE('2023-12-03', 'YYYY-MM-DD'), 3, 2, 'EI');
+
+-- INSERT data ke dalam tabel invoice_detail
+INSERT INTO invoice_detail 
+VALUES (1, 1, 1, 1);
+INSERT INTO invoice_detail 
+VALUES (2, 1, 2, 1);
+INSERT INTO invoice_detail 
+VALUES (3, 1, 6, 1);
+INSERT INTO invoice_detail 
+VALUES (4, 2, 5, 1);
+INSERT INTO invoice_detail 
+VALUES (5, 2, 7, 1);
+INSERT INTO invoice_detail 
+VALUES (6, 3, 1, 1);
+INSERT INTO invoice_detail 
+VALUES (7, 3, 8, 1);
+INSERT INTO invoice_detail 
+VALUES (8, 4, 4, 1);
+INSERT INTO invoice_detail 
+VALUES (9, 4, 15, 1);
+INSERT INTO invoice_detail 
+VALUES (10, 5, 11, 1);
+INSERT INTO invoice_detail 
+VALUES (11, 6, 13, 1);
+INSERT INTO invoice_detail 
+VALUES (12, 7, 1, 1);
+INSERT INTO invoice_detail 
+VALUES (13, 7, 14, 1);
+INSERT INTO invoice_detail 
+VALUES (14, 7, 20, 1);
+INSERT INTO invoice_detail 
+VALUES (15, 8, 1, 1);
+INSERT INTO invoice_detail 
+VALUES (16, 8, 15, 2);
